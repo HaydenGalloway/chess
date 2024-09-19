@@ -7,27 +7,25 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
 
     public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition myPosition) {
 
-        Collection<ChessMove> validMoves = new ArrayList<>();
+        Collection<ChessMove> validMoves = new ArrayList<ChessMove>();
 
-//        int[][] possibleMoves = {
-//                {1, 2}, {1, -2}, {2, 1}, {2, -1}, {-1, 2}, {-1, -2}, {-2, 1}, {-2, 1}
-//        };
+        int startRow = myPosition.getRow();
+        int startColumn = myPosition.getColumn();
 
+        int[][] possibleMoves = {
+                {1, 2}, {1, -2}, {2, 1}, {2, -1}, {-1, 2}, {-1, -2}, {-2, 1}, {-2, 1}
+        };
+
+        for (int[] move : possibleMoves) {
+            int newRow = startRow + move[0];
+            int newCol = startColumn + move[1];
+
+            if (squareOnBoard(startRow, startColumn)) {
+                ChessPosition endPosition = new ChessPosition(newRow, newCol);
+                addMoves(validMoves, board, myPosition, endPosition, null);
+            }
+        }
 
         return validMoves;
-    }
-
-
-    protected void addMoves(Collection<ChessMove> validMoves, ChessBoard board, ChessPosition startPosition, ChessPosition endPosition) {
-        if (board.getPiece(startPosition).getTeamColor() != board.getPiece(endPosition).getTeamColor()) {
-            validMoves.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
-        }
-        if (board.getPiece(endPosition) == null) {
-            validMoves.add(new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT));
-        }
-    }
-
-    private boolean squareOnBoard(int row, int col) {
-        return row>=0 && row<8 && col>=0 && col<8;
     }
 }
