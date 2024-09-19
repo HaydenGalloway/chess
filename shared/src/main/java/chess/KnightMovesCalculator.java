@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class KnightMovesCalculator extends PieceMovesCalculator {
 
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition myPosition) {
 
         Collection<ChessMove> validMoves = new ArrayList<>();
 
@@ -17,8 +17,6 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
         return validMoves;
     }
 
-    if (squareOnBoard()) {
-    }
 
     protected void addMoves(Collection<ChessMove> validMoves, ChessBoard board, ChessPosition startPosition, ChessPosition endPosition) {
         if (board.getPiece(startPosition).getTeamColor() != board.getPiece(endPosition).getTeamColor()) {
