@@ -6,7 +6,7 @@ public abstract class PieceMovesCalculator {
     abstract public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition piece);
 
     protected boolean squareOnBoard(int row, int col) {
-        return row>=0 && row<8 && col>=0 && col<8;
+        return row>=1 && row<=8 && col>=1 && col<=8;
     }
 
     protected void addMoves(Collection<ChessMove> validMoves, ChessBoard board, ChessPosition startPosition,

@@ -20,7 +20,7 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
             int newRow = startRow + move[0];
             int newCol = startColumn + move[1];
 
-            if (squareOnBoard(startRow, startColumn)) {
+            if (squareOnBoard(newRow, newCol)) {
                 ChessPosition endPosition = new ChessPosition(newRow, newCol);
                 addMoves(validMoves, board, myPosition, endPosition, null);
             }
