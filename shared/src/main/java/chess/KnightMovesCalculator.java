@@ -7,14 +7,13 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
 
     public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition myPosition) {
 
-        Collection<ChessMove> validMoves = new ArrayList<ChessMove>();
+        Collection<ChessMove> validMoves = new ArrayList<>();
 
         int startRow = myPosition.getRow();
         int startColumn = myPosition.getColumn();
 
         int[][] possibleMoves = {
-                {1, 2}, {1, -2}, {2, 1}, {2, -1},
-                {-1, 2}, {-1, -2}, {-2, 1}, {-2, 1}
+                {1, 2}, {1, -2}, {2, 1}, {2, -1}, {-1, 2}, {-1, -2}, {-2, 1}, {-2, 1}
         };
 
         for (int[] move : possibleMoves) {

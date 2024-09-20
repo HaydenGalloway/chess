@@ -76,6 +76,14 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new KnightMovesCalculator().getMoves(board, myPosition);
+
+        if (type == PieceType.KNIGHT) {
+                return new KnightMovesCalculator().getMoves(board, myPosition);
+        } else if (type == PieceType.ROOK) {
+            return new RookMovesCalculator().getMoves(board, myPosition);
+        } else {
+            return null;
+        }
+
     }
 }
