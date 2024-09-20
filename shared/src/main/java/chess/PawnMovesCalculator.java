@@ -5,21 +5,21 @@ import java.util.Collection;
 
 public class PawnMovesCalculator extends PieceMovesCalculator {
 
-    public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition piece) {
+    public Collection<ChessMove> getMoves(ChessBoard board, ChessPosition myPosition) {
 
         Collection<ChessMove> validMoves = new ArrayList<>();
 
-        ChessPiece pawn = board.getPiece(piece);
+        ChessPiece pawn = board.getPiece(myPosition);
         ChessGame.TeamColor color = pawn.getTeamColor();
 
-        int row = piece.getRow();
-        int col = piece.getColumn();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
 
         int direction, promotionRow, startRow;
 
         if (color == ChessGame.TeamColor.WHITE) {
             direction = 1;
-            promotionRow = 7;
+            promotionRow = 8;
             startRow = 2;
         } else {
             direction = -1;
@@ -48,12 +48,12 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
 
                 if (endPiece != null && endPiece.getTeamColor() != color) {
                     if (newRow == promotionRow) {
-                        addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.QUEEN);
-                        addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.ROOK);
-                        addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.BISHOP);
-                        addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.KNIGHT);
+                        addMoves(validMoves, board, myPosition, endPosition, ChessPiece.PieceType.QUEEN);
+                        addMoves(validMoves, board, myPosition, endPosition, ChessPiece.PieceType.ROOK);
+                        addMoves(validMoves, board, myPosition, endPosition, ChessPiece.PieceType.BISHOP);
+                        addMoves(validMoves, board, myPosition, endPosition, ChessPiece.PieceType.KNIGHT);
                     } else {
-                        addMoves(validMoves, board, piece, endPosition, null);
+                        addMoves(validMoves, board, myPosition, endPosition, null);
                     }
                 }
             }
@@ -66,24 +66,25 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
         if (squareOnBoard(oneRow, col) && board.getPiece(new ChessPosition(oneRow, col)) == null) {
             ChessPosition onePosition = new ChessPosition(oneRow, col);
             if (oneRow == promotionRow) {
-                addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.QUEEN);
-                addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.ROOK);
-                addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.BISHOP);
-                addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.KNIGHT);
+                addMoves(validMoves, board, myPosition, onePosition, ChessPiece.PieceType.QUEEN);
+                addMoves(validMoves, board, myPosition, onePosition, ChessPiece.PieceType.ROOK);
+                addMoves(validMoves, board, myPosition, onePosition, ChessPiece.PieceType.BISHOP);
+                addMoves(validMoves, board, myPosition, onePosition, ChessPiece.PieceType.KNIGHT);
             } else {
-                addMoves(validMoves, board, piece, onePosition, null);
+                addMoves(validMoves, board, myPosition, onePosition, null);
+            }
+
+            //// Case of starting positions, two squares forward
+
+            if (row == startRow) {
+                int twoRow = row + (2 * direction);
+                if (squareOnBoard(twoRow, col) && board.getPiece(new ChessPosition(twoRow, col)) == null) {
+                    ChessPosition twoPosition = new ChessPosition(twoRow, col);
+                    addMoves(validMoves, board, myPosition, twoPosition, null);
+                }
             }
         }
 
-        //// Case of starting positions, two squares forward
-
-        if (row == startRow) {
-            int twoRow = row + (2 * direction);
-            if (squareOnBoard(twoRow, col) && board.getPiece(new ChessPosition(twoRow, col)) == null) {
-                ChessPosition twoPosition = new ChessPosition(twoRow, col);
-                addMoves(validMoves, board, piece, twoPosition, null);
-            }
-        }
 
         return validMoves;
     }
