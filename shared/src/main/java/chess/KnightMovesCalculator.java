@@ -13,7 +13,8 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
         int startColumn = myPosition.getColumn();
 
         int[][] possibleMoves = {
-                {1, 2}, {1, -2}, {2, 1}, {2, -1}, {-1, 2}, {-1, -2}, {-2, 1}, {-2, 1}
+                {1, 2}, {1, -2}, {2, 1}, {2, -1},
+                {-1, 2}, {-1, -2}, {-2, 1}, {-2, 1}
         };
 
         for (int[] move : possibleMoves) {
