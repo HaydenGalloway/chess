@@ -15,23 +15,27 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
         int row = piece.getRow();
         int col = piece.getColumn();
 
-        int direction, promotionRow;
+        int direction, promotionRow, startRow;
 
         if (color == ChessGame.TeamColor.WHITE) {
             direction = 1;
             promotionRow = 7;
+            startRow = 2;
         } else {
             direction = -1;
             promotionRow = 1;
+            startRow = 7;
         }
 
-        // Capture Directions
+        // Capture Directions]
+
         int[][] directions = {
                 {direction, 1},
                 {direction, -1}
         };
 
         // Iterate through Capture Directions
+
         for (int[] move: directions) {
 
             int newRow = row + move[0];
@@ -47,6 +51,7 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
                         addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.QUEEN);
                         addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.ROOK);
                         addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.BISHOP);
+                        addMoves(validMoves, board, piece, endPosition, ChessPiece.PieceType.KNIGHT);
                     } else {
                         addMoves(validMoves, board, piece, endPosition, null);
                     }
@@ -64,12 +69,21 @@ public class PawnMovesCalculator extends PieceMovesCalculator {
                 addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.QUEEN);
                 addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.ROOK);
                 addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.BISHOP);
+                addMoves(validMoves, board, piece, onePosition, ChessPiece.PieceType.KNIGHT);
             } else {
                 addMoves(validMoves, board, piece, onePosition, null);
             }
-
         }
 
+        //// Case of starting positions, two squares forward
+
+        if (row == startRow) {
+            int twoRow = row + (2 * direction);
+            if (squareOnBoard(twoRow, col) && board.getPiece(new ChessPosition(twoRow, col)) == null) {
+                ChessPosition twoPosition = new ChessPosition(twoRow, col);
+                addMoves(validMoves, board, piece, twoPosition, null);
+            }
+        }
 
         return validMoves;
     }
