@@ -9,16 +9,23 @@ public class KnightMovesCalculator extends PieceMovesCalculator {
 
         Collection<ChessMove> validMoves = new ArrayList<>();
 
-        int startRow = myPosition.getRow();
-        int startColumn = myPosition.getColumn();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
 
         int[][] possibleMoves = {
-                {1, 2}, {1, -2}, {2, 1}, {2, -1}, {-1, 2}, {-1, -2}, {-2, 1}, {-2, 1}
+                {1, 2},
+                {1, -2},
+                {2, 1},
+                {2, -1},
+                {-1, 2},
+                {-1, -2},
+                {-2, 1},
+                {-2, -1}
         };
 
         for (int[] move : possibleMoves) {
-            int newRow = startRow + move[0];
-            int newCol = startColumn + move[1];
+            int newRow = row + move[0];
+            int newCol = col + move[1];
 
             if (squareOnBoard(newRow, newCol)) {
                 ChessPosition endPosition = new ChessPosition(newRow, newCol);
