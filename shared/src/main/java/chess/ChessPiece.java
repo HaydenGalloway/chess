@@ -85,10 +85,10 @@ public class ChessPiece {
             return new BishopMovesCalculator().getMoves(board, myPosition);
         } else if (type == PieceType.QUEEN) {
             return new QueenMovesCalculator().getMoves(board, myPosition);
+        } else if (type == PieceType.KING) {
+            return new KingMovesCalculator().getMoves(board, myPosition);
         }
-//        else if (type == PieceType.KING) {
-//            return new KingMovesCalculator().getMoves(board, myPosition);
-//        } else if (type == PieceType.PAWN) {
+//        else if (type == PieceType.PAWN) {
 //            return new PawnMovesCalculator().getMoves(board, myPosition);
 //        }
         else {
