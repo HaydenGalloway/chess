@@ -72,7 +72,7 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(move.getStartPosition());
 
         if (piece == null || piece.getTeamColor() != turn) {
-            throw new InvalidMoveException("Invalid start position for piece, turn.");
+            throw new InvalidMoveException("Invalid move.");
         }
 
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
@@ -99,7 +99,14 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        ChessPosition kingPosition = getKingPosition(teamColor);
+
+        if (kingPosition == null) {
+            return false;
+        }
+
+        return underAttack(kingPosition, teamColor);
     }
 
     /**
@@ -140,5 +147,47 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+
+    private ChessPosition getKingPosition(TeamColor teamColor) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPosition kingPosition = new ChessPosition(row + 1, col + 1);
+                ChessPiece piece = board.getPiece(kingPosition);
+
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING &&
+                        piece.getTeamColor() == teamColor) {
+                    return kingPosition;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    private boolean underAttack(ChessPosition position, TeamColor defendingTeam) {
+
+        TeamColor attackingTeam = (defendingTeam == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPosition attackPosition = new ChessPosition(row + 1, col + 1);
+                ChessPiece piece = board.getPiece(attackPosition);
+
+                if (piece != null && piece.getTeamColor() == attackingTeam) {
+
+                    Collection<ChessMove> moves = piece.pieceMoves(board, attackPosition);
+
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(position)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
 }
