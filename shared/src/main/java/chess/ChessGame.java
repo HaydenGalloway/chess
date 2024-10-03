@@ -15,6 +15,8 @@ public class ChessGame {
 
     public ChessGame() {
         turn = TeamColor.WHITE;
+        board = new ChessBoard();
+        board.resetBoard();
     }
 
     /**
@@ -66,7 +68,28 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+
+        if (piece == null || piece.getTeamColor() != turn) {
+            throw new InvalidMoveException("Invalid start position for piece, turn.");
+        }
+
+        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+
+        if (validMoves == null || !validMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move.");
+        }
+
+        board.addPiece(move.getEndPosition(), piece);
+        board.addPiece(move.getStartPosition(), null);
+
+        if (move.getPromotionPiece() != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            ChessPiece promotionPiece = new ChessPiece(turn, move.getPromotionPiece());
+            board.addPiece(move.getEndPosition(), promotionPiece);
+        }
+
+        turn = (turn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
     }
 
     /**
@@ -117,4 +140,5 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
 }
