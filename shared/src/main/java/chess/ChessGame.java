@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -81,10 +82,27 @@ public class ChessGame {
         }
 
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
 
-        moves.removeIf(move -> isInCheck(turn));
+        for (ChessMove move : moves) {
+            try {
+                ChessBoard boardClone = board.clone();
+                boardClone.addPiece(move.getEndPosition(), piece);
+                boardClone.addPiece(move.getStartPosition(), null);
 
-        return moves;
+                ChessGame newGame = new ChessGame();
+                newGame.setBoard(boardClone);
+                newGame.setTeamTurn(turn);
+
+                if (!newGame.isInCheck(turn)) {
+                    validMoves.add(move);
+                }
+
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return validMoves;
     }
 
     /**
@@ -199,8 +217,8 @@ public class ChessGame {
 
         TeamColor attackingTeam = (defendingTeam == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
-        for (int row=0; row < 8; row++) {
-            for (int col=0; col<8; col++) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
                 ChessPosition attackPosition = new ChessPosition(row + 1, col + 1);
                 ChessPiece piece = board.getPiece(attackPosition);
 
@@ -220,8 +238,8 @@ public class ChessGame {
     }
 
     private boolean canEscapeCheck(TeamColor teamColor) {
-        for (int row=0; row<8; row++) {
-            for (int col=0; col<8; col++) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
                 ChessPosition position = new ChessPosition(row + 1, col + 1);
                 ChessPiece piece = board.getPiece(position);
 
