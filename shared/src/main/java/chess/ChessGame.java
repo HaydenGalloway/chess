@@ -191,8 +191,8 @@ public class ChessGame {
 
         TeamColor attackingTeam = (defendingTeam == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row=0; row < 8; row++) {
+            for (int col=0; col<8; col++) {
                 ChessPosition attackPosition = new ChessPosition(row + 1, col + 1);
                 ChessPiece piece = board.getPiece(attackPosition);
 
@@ -209,6 +209,25 @@ public class ChessGame {
             }
         }
         return false;
+    }
+
+    private boolean canEscapeCheck(TeamColor teamColor) {
+        for (int row=0; row<8; row++) {
+            for (int col=0; col<8; col++) {
+                ChessPosition escapePosition = new ChessPosition(row + 1, col + 1);
+                ChessPiece escapePiece = board.getPiece(escapePosition);
+
+                if (escapePiece != null && escapePiece.getTeamColor() != teamColor) {
+                    Collection<ChessMove> escapeMoves = escapePiece.pieceMoves(board, escapePosition);
+
+                    for (ChessMove move : escapeMoves) {
+                            //// I need to see how to clone the board and simulate the possible moves.
+                    }
+
+
+                }
+            }
+        }
     }
 
 
