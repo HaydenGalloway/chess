@@ -76,11 +76,15 @@ public class ChessGame {
 
         ChessPiece piece = getBoard().getPiece(startPosition);
 
-        if (piece == null || piece.getTeamColor() != turn) {
+        if (piece == null) {
             return null;
         }
 
-        return piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
+
+        moves.removeIf(move -> isInCheck(turn));
+
+        return moves;
     }
 
     /**
@@ -228,6 +232,7 @@ public class ChessGame {
                 }
             }
         }
+        return true;
     }
 
 
