@@ -142,7 +142,11 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+
+        return !canEscapeCheck(teamColor);
     }
 
     /**
@@ -218,21 +222,34 @@ public class ChessGame {
     private boolean canEscapeCheck(TeamColor teamColor) {
         for (int row=0; row<8; row++) {
             for (int col=0; col<8; col++) {
-                ChessPosition escapePosition = new ChessPosition(row + 1, col + 1);
-                ChessPiece escapePiece = board.getPiece(escapePosition);
+                ChessPosition position = new ChessPosition(row + 1, col + 1);
+                ChessPiece piece = board.getPiece(position);
 
-                if (escapePiece != null && escapePiece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> escapeMoves = escapePiece.pieceMoves(board, escapePosition);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
 
-                    for (ChessMove move : escapeMoves) {
-                            //// I need to see how to clone the board and simulate the possible moves.
+                    for (ChessMove move : moves) {
+                        try {
+
+                            ChessBoard boardClone = board.clone();
+                            boardClone.addPiece(move.getEndPosition(), piece);
+                            boardClone.addPiece(move.getStartPosition(), null);
+
+                            ChessGame newGame = new ChessGame();
+                            newGame.setTeamTurn(turn);
+
+                            if (!newGame.isInCheck(teamColor)) {
+                                return true;
+                            }
+
+                        } catch (CloneNotSupportedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-
-
                 }
             }
         }
-        return true;
+        return false;
     }
 
 
