@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public abstract class PieceMovesCalculator {
 
-    public abstract Collection<ChessMove> getMoves(ChessBoard board, ChessPosition position);
+    public abstract Collection<ChessMove> getMoves(ChessBoard board, ChessPosition myPosition);
 
     protected boolean squareOnBoard(int row, int col) {
         return row>=1 && row<=8 && col>=1 && col <=8;

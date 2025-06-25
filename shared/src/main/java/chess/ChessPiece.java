@@ -55,6 +55,8 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         if (type == PieceType.KNIGHT) {
             return new KnightMoves().getMoves(board, myPosition);
+        } else if (type == PieceType.ROOK) {
+            return new RookMoves().getMoves(board, myPosition);
         } else {
             return null;
         }
