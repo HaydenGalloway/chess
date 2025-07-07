@@ -135,7 +135,11 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            return false;
+        } else {
+            return noValidMoves(teamColor);
+        }
     }
 
     /**
@@ -146,7 +150,27 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)) {
+            return false;
+        } else {
+            return noValidMoves(teamColor);
+        }
+    }
+
+    private boolean noValidMoves (TeamColor teamColor) {
+        for (int row = 1; row <= 8; row ++) {
+            for (int col = 1; col <= 8; col ++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(pos);
+                if (piece != null && teamColor == piece.getTeamColor()) {
+                    Collection<ChessMove> moves = validMoves(pos);
+                    if (!moves.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
