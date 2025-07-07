@@ -96,6 +96,11 @@ public class ChessGame implements Cloneable {
         }
         board.addPiece(move.getEndPosition(), movePiece);
         board.addPiece(move.getStartPosition(), null);
+        if (piece.getTeamColor() == TeamColor.WHITE) {
+            setTeamTurn(TeamColor.BLACK);
+        } else {
+            setTeamTurn(TeamColor.WHITE);
+        }
     }
 
     /**
