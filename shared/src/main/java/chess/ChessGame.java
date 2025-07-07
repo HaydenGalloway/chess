@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -52,7 +53,21 @@ public class ChessGame implements Cloneable {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return null;
+        }
+        Collection<ChessMove> allMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        for (ChessMove move : allMoves) {
+            ChessBoard tempBoard = board.clone();
+            ChessPiece testPiece = board.getPiece(move.getStartPosition());
+            tempBoard.addPiece(move.getEndPosition(), testPiece);
+            validMoves.add(move);
+        }
+
+        return validMoves;
     }
 
     /**
