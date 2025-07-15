@@ -17,6 +17,14 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
+    public AuthData register(UserData user) throws DataAccessException {
+        userDAO.createUser(user);
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, user.username());
+        authDAO.createAuth(authData);
+        return authData;
+    }
+
     public AuthData login(UserData user) throws DataAccessException {
         UserData existingUser = userDAO.getUser(user.username());
         if (!existingUser.password().equals(user.password())) {
