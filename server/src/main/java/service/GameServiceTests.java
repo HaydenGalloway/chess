@@ -8,15 +8,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTests {
-
+    AuthDAO authDAO;
+    GameDAO gameDAO;
     private GameService gameService;
     private String authToken;
 
     @BeforeEach
     public void setUp() throws DataAccessException {
 
-        AuthDAO authDAO = new MemoryAuthDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
+        authDAO = new MemoryAuthDAO();
+        gameDAO = new MemoryGameDAO();
         UserDAO userDAO = new MemoryUserDAO();
         userDAO.clear();
         authDAO.clear();
@@ -47,15 +48,35 @@ public class GameServiceTests {
     }
 
     @Test
-    public void listGamesPositive() {
+    public void listGamesPositiveTest() {
         assertDoesNotThrow(() -> gameService.listGames(authToken),"Verifying that no exceptions are thrown.");
     }
 
     @Test
-    public void listGamesNegative() {
+    public void listGamesNegativeTest() {
         String fakeToken = "57593048qgh43eu9ehjee";
         DataAccessException exception = assertThrows(DataAccessException.class, () -> gameService.listGames(fakeToken),
                 "DataAccessException should be thrown.");
         assertEquals("Error: unauthorized", exception.getMessage());
     }
+
+    @Test
+    public void joinGamePositiveTest() throws DataAccessException {
+        GameData game = gameService.createGame(authToken, "Game To Join Name");
+        assertDoesNotThrow(() -> gameService.joinGame(authToken, "WHITE", game.gameID()),
+                "Verifying that no exceptions are thrown.");
+        GameData updatedGame = gameDAO.getGame(game.gameID());
+        assertEquals("Freddy", updatedGame.whiteUsername(), "The white player username should be 'Freddy'.");
+    }
+
+    @Test
+    public void joinGameNegativeTest() throws DataAccessException {
+        GameData game = gameService.createGame(authToken, "Game to Join Name");
+        gameService.joinGame(authToken, "BLACK", game.gameID());
+        DataAccessException exception = assertThrows(DataAccessException.class, () ->
+                gameService.joinGame(authToken, "BLACK", game.gameID()),
+                "DataAccessException should be thrown.");
+        assertEquals("Error: already taken", exception.getMessage());
+    }
+
 }
