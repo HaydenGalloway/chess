@@ -12,7 +12,7 @@ public class MemoryUserDAO implements UserDAO {
     @Override
     public void createUser(UserData user) throws DataAccessException {
         if (users.containsKey(user.username())) {
-            throw new DataAccessException("Error. Username already taken.");
+            throw new DataAccessException("Error: username already taken");
         }
         users.put(user.username(), user);
     }
@@ -21,7 +21,7 @@ public class MemoryUserDAO implements UserDAO {
     public UserData getUser(String username) throws DataAccessException {
         UserData user = users.get(username);
         if (user == null) {
-            throw new DataAccessException("Error. Not authorized.");
+            throw new DataAccessException("Error: unauthorized");
         }
         return user;
     }

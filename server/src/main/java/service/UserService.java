@@ -28,7 +28,7 @@ public class UserService {
     public AuthData login(UserData user) throws DataAccessException {
         UserData existingUser = userDAO.getUser(user.username());
         if (!existingUser.password().equals(user.password())) {
-            throw new DataAccessException("Error. Password already exists.");
+            throw new DataAccessException("Error: unauthorized");
         }
         String authToken = UUID.randomUUID().toString();
         AuthData authData = new AuthData(authToken, user.username());

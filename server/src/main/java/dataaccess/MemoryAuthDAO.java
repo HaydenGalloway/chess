@@ -11,7 +11,7 @@ public class MemoryAuthDAO implements AuthDAO {
     @Override
     public void createAuth(AuthData authData) throws DataAccessException {
         if (authTokens.containsKey(authData.authToken())) {
-            throw new DataAccessException("Error. Token previously generated.");
+            throw new DataAccessException("Error: token previously generated");
         }
         authTokens.put(authData.authToken(), authData);
     }
@@ -20,7 +20,7 @@ public class MemoryAuthDAO implements AuthDAO {
     public AuthData getAuth(String authToken) throws DataAccessException {
         AuthData authData = authTokens.get(authToken);
         if (authData == null) {
-            throw new DataAccessException("Error. Not authorized.");
+            throw new DataAccessException("Error: unauthorized");
         }
         return authData;
     }
@@ -28,7 +28,7 @@ public class MemoryAuthDAO implements AuthDAO {
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
         if (!authTokens.containsKey(authToken)) {
-            throw new DataAccessException("Error. Not authorized.");
+            throw new DataAccessException("Error: unauthorized");
         }
         authTokens.remove(authToken);
     }
