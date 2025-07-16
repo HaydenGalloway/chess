@@ -34,6 +34,14 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
+    public void updateGame(int gameID, GameData game) throws DataAccessException {
+        if (!games.containsKey(gameID)) {
+            throw new DataAccessException("Error: not found");
+        }
+        games.put(gameID, game);
+    }
+
+    @Override
     public void clear() throws DataAccessException {
         games.clear();
     }
