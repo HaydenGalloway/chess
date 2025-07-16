@@ -23,11 +23,13 @@ public class Server {
 
         RegisterHandler registerHandler = new RegisterHandler(userService);
         LoginHandler loginHandler = new LoginHandler(userService);
+        LogoutHandler logoutHandler = new LogoutHandler(userService);
         ClearHandler clearHandler = new ClearHandler(clearService);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", registerHandler::handleRegister);
         Spark.post("/session", loginHandler::handleLogin);
+        Spark.delete("/session", logoutHandler::handleLogout);
         Spark.delete("/db", clearHandler::handelClear);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
