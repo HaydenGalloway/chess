@@ -6,8 +6,6 @@ import service.GameService;
 import service.UserService;
 import spark.*;
 
-import java.rmi.registry.Registry;
-
 public class Server {
 
     public int run(int desiredPort) {
@@ -33,7 +31,6 @@ public class Server {
 
         ClearHandler clearHandler = new ClearHandler(clearService);
 
-        // Register your endpoints and handle exceptions here.
         Spark.post("/user", registerHandler::handleRegister);
         Spark.post("/session", loginHandler::handleLogin);
         Spark.delete("/session", logoutHandler::handleLogout);
@@ -42,8 +39,6 @@ public class Server {
         Spark.put("/game", joinGameHandler::handleJoinGame);
         Spark.delete("/db", clearHandler::handelClear);
 
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        //Spark.init();
         Spark.awaitInitialization();
         return Spark.port();
     }

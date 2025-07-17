@@ -32,7 +32,6 @@ public class RegisterHandler {
             if ("Error: username already taken".equals(e.getMessage())) {
                 response.status(403);
             } else {
-                // Not sure what could trigger this yet, but maybe when I implement the database.
                 response.status(500);
             }
             return gson.toJson(Map.of("message", e.getMessage()));
