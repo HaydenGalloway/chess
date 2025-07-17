@@ -16,7 +16,7 @@ public class ClearServiceTest {
     private ClearService clearService;
 
     @BeforeEach
-    public void setClearTestData() {
+    public void setUp() {
         userDAO = new MemoryUserDAO();
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();
