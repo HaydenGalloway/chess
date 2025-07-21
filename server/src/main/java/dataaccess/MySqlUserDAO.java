@@ -27,6 +27,33 @@ public class MySqlUserDAO implements UserDAO {
 
     private final String[] createStatements = {
             """
+            CREATE TABLE IF NOT EXISTS  users (
+              `id` int NOT NULL AUTO_INCREMENT,
+              `username` varchar(255) NOT NULL,
+              `password` varchar(255) NOT NULL,
+              PRIMARY KEY (`id`),
+              INDEX(username)
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS  auth (
+              `id` int NOT NULL AUTO_INCREMENT,
+              `username` varchar(255) NOT NULL,
+              `authToken` varchar(255) NOT NULL,
+              PRIMARY KEY (`id`),
+              INDEX(username)
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS  games (
+              `gameID` int NOT NULL AUTO_INCREMENT,
+              `whiteUsername` varchar(255) NOT NULL,
+              `blackUsername` varchar(255) NOT NULL,
+              `gameName` varchar(255) NOT NULL,
+              `game` varchar(255) NOT NULL,
+              PRIMARY KEY (`gameID`),
+              INDEX(`gameID`)
+            )
             """
     };
 
