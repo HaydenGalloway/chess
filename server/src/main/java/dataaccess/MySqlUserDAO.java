@@ -20,13 +20,12 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
-        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
-        var statement = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
-        try {
-            executeUpdate(statement, user.username(), hashedPassword, user.email());
-        } catch (DataAccessException e) {
+        if (getUser(user.username()) != null) {
             throw new DataAccessException("Error: already taken");
         }
+        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+        var statement = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
+        executeUpdate(statement, user.username(), hashedPassword, user.email());
     }
 
     @Override

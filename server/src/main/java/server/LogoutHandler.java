@@ -27,7 +27,11 @@ public class LogoutHandler {
             response.status(200);
             return "{}";
         } catch (DataAccessException e) {
-            response.status(401);
+            if ("Error: unauthorized".equals(e.getMessage())) {
+                response.status(401);
+            } else {
+                response.status(500);
+            }
             return gson.toJson(Map.of("message", e.getMessage()));
         }
     }

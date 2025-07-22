@@ -26,8 +26,12 @@ public class ListGamesHandler {
             response.status(200);
             return gson.toJson(Map.of("games", games));
         } catch (DataAccessException e) {
-            response.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            if ("Error: unauthorized".equals(e.getMessage())) {
+                response.status(401);
+            } else {
+                response.status(500);
+            }
+            return gson.toJson(Map.of("message", e.getMessage()));
         }
     }
 
