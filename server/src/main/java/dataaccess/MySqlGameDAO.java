@@ -1,9 +1,10 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,7 +23,31 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
         return null;
+    }
+
+    private GameData readGame(ResultSet rs) throws SQLException {
+        var gameID = rs.getInt("gameID");
+        var whiteUsername = rs.getString("whiteUsername");
+        var blackUsername = rs.getString("blackUsername");
+        var gameName = rs.getString("gameName");
+        var gameJson = rs.getString("game");
+        var gson = new Gson();
+        var game = gson.fromJson(gameJson, ChessGame.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
 
     @Override
