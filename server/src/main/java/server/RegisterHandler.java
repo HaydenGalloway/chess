@@ -23,13 +23,13 @@ public class RegisterHandler {
             UserData user = gson.fromJson(request.body(), UserData.class);
             if (user.username() == null || user.password() == null || user.email() == null) {
                 response.status(400);
-                return gson.toJson(Map.of("message", "Error: missing registration information"));
+                return gson.toJson(Map.of("message", "Error: bad request"));
             }
             AuthData authData = userService.register(user);
             response.status(200);
             return gson.toJson(authData);
         } catch (DataAccessException e) {
-            if ("Error: username already taken".equals(e.getMessage())) {
+            if ("Error: already taken".equals(e.getMessage())) {
                 response.status(403);
             } else {
                 response.status(500);

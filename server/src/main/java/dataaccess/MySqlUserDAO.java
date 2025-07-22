@@ -14,7 +14,7 @@ public class MySqlUserDAO implements UserDAO {
         try {
             configureDatabase();
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error: " + e.getMessage(), e);
         }
     }
 
@@ -42,7 +42,7 @@ public class MySqlUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException(String.format("Unable to return user data: %s", e.getMessage()), e);
+            throw new DataAccessException(String.format("Error: %s", e.getMessage()), e);
         }
         return null;
     }
@@ -71,28 +71,24 @@ public class MySqlUserDAO implements UserDAO {
                 return 0;
             }
         } catch (SQLException e) {
-            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+            throw new DataAccessException(String.format("Error: %s, %s", statement, e.getMessage()), e);
         }
     }
 
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS users (
-              `id` int NOT NULL AUTO_INCREMENT,
               `username` VARCHAR(255) NOT NULL,
               `password` VARCHAR(255) NOT NULL,
               `email` VARCHAR(255) NOT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(username)
+              PRIMARY KEY (`username`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """
             CREATE TABLE IF NOT EXISTS auth (
-              `id` int NOT NULL AUTO_INCREMENT,
               `authToken` VARCHAR(255) NOT NULL,
               `username` VARCHAR(255) NOT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(authToken),
+              PRIMARY KEY (`authToken`),
               INDEX(username)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
@@ -117,7 +113,7 @@ public class MySqlUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new DataAccessException(String.format("Error: %s", ex.getMessage()));
         }
     }
 

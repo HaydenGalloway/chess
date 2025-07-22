@@ -27,7 +27,7 @@ public class MySqlAuthDAO implements AuthDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException(String.format("Unable to return auth data: %s", e.getMessage()), e);
+            throw new DataAccessException(String.format("Error: %s", e.getMessage()), e);
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class MySqlAuthDAO implements AuthDAO {
                 return 0;
             }
         } catch (SQLException e) {
-            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+            throw new DataAccessException(String.format("Error: %s, %s", statement, e.getMessage()));
         }
     }
 
