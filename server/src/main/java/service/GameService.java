@@ -20,7 +20,13 @@ public class GameService {
     }
 
     public GameData createGame(String authToken, String gameName) throws DataAccessException {
-        authDAO.getAuth(authToken);
+        AuthData authData = authDAO.getAuth(authToken);
+        if (authData == null) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+        if (gameName == null) {
+            throw new DataAccessException("Error: bad request");
+        }
         ChessGame newChessGame = new ChessGame();
         newChessGame.getBoard().resetBoard();
         GameData newGame = new GameData(0, null, null, gameName, newChessGame);
@@ -28,13 +34,21 @@ public class GameService {
     }
 
     public Collection<GameData> listGames(String authToken) throws DataAccessException {
-        authDAO.getAuth(authToken);
+        if (authDAO.getAuth(authToken) == null) {
+            throw new DataAccessException("Error: unauthorized");
+        }
         return gameDAO.getAllGames();
     }
 
     public void joinGame(String authToken, String playerColor, int gameID) throws DataAccessException {
         AuthData authData = authDAO.getAuth(authToken);
+        if (authData == null) {
+            throw new DataAccessException("Error: unauthorized");
+        }
         GameData gameData = gameDAO.getGame(gameID);
+        if (gameData == null) {
+            throw new DataAccessException("Error: bad request");
+        }
         GameData activeGame;
         if ("WHITE".equalsIgnoreCase(playerColor)) {
             if (gameData.whiteUsername() != null) {
