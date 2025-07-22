@@ -96,7 +96,7 @@ public class MySqlGameDAO implements GameDAO {
 
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    rs.getInt(1);
+                    return rs.getInt(1);
                 }
                 return 0;
             }

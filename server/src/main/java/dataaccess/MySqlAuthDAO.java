@@ -44,7 +44,7 @@ public class MySqlAuthDAO implements AuthDAO {
         executeUpdate(statement);
     }
 
-    private void executeUpdate(String statement, Object... params) throws DataAccessException {
+    private int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
@@ -57,8 +57,9 @@ public class MySqlAuthDAO implements AuthDAO {
 
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    rs.getInt(1);
+                    return rs.getInt(1);
                 }
+                return 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));

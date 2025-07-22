@@ -53,7 +53,7 @@ public class MySqlUserDAO implements UserDAO {
         executeUpdate(statement);
     }
 
-    private void executeUpdate(String statement, Object... params) throws DataAccessException {
+    private int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
@@ -66,8 +66,9 @@ public class MySqlUserDAO implements UserDAO {
 
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    rs.getInt(1);
+                    return rs.getInt(1);
                 }
+                return 0;
             }
         } catch (SQLException e) {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
@@ -76,33 +77,34 @@ public class MySqlUserDAO implements UserDAO {
 
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS  users (
+            CREATE TABLE IF NOT EXISTS users (
               `id` int NOT NULL AUTO_INCREMENT,
-              `username` varchar(255) NOT NULL,
-              `password` varchar(255) NOT NULL,
+              `username` VARCHAR(255) NOT NULL,
+              `password` VARCHAR(255) NOT NULL,
+              `email` VARCHAR(255) NOT NULL,
               PRIMARY KEY (`id`),
               INDEX(username)
-            )
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """
-            CREATE TABLE IF NOT EXISTS  auth (
+            CREATE TABLE IF NOT EXISTS auth (
               `id` int NOT NULL AUTO_INCREMENT,
-              `username` varchar(255) NOT NULL,
-              `authToken` varchar(255) NOT NULL,
+              `authToken` VARCHAR(255) NOT NULL,
+              `username` VARCHAR(255) NOT NULL,
               PRIMARY KEY (`id`),
+              INDEX(authToken),
               INDEX(username)
-            )
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """
-            CREATE TABLE IF NOT EXISTS  games (
-              `gameID` int NOT NULL AUTO_INCREMENT,
-              `whiteUsername` varchar(255) NOT NULL,
-              `blackUsername` varchar(255) NOT NULL,
-              `gameName` varchar(255) NOT NULL,
-              `game` varchar(255) NOT NULL,
-              PRIMARY KEY (`gameID`),
-              INDEX(`gameID`)
-            )
+            CREATE TABLE IF NOT EXISTS games (
+              `gameID` INT NOT NULL AUTO_INCREMENT,
+              `whiteUsername` VARCHAR(255) DEFAULT NULL,
+              `blackUsername` VARCHAR(255) DEFAULT NULL,
+              `gameName` VARCHAR(255) NOT NULL,
+              `game` TEXT NOT NULL,
+              PRIMARY KEY (`gameID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
 
