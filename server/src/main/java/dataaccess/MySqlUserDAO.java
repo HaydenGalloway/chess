@@ -10,15 +10,23 @@ import static java.sql.Types.NULL;
 
 public class MySqlUserDAO implements UserDAO {
 
-    public MySqlUserDAO() throws DataAccessException {
-        configureDatabase();
+    public MySqlUserDAO() {
+        try {
+            configureDatabase();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
         String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
         var statement = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
-        executeUpdate(statement, user.username(), hashedPassword, user.email());
+        try {
+            executeUpdate(statement, user.username(), hashedPassword, user.email());
+        } catch (DataAccessException e) {
+            throw new DataAccessException("Error: already taken");
+        }
     }
 
     @Override

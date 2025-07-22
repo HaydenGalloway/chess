@@ -13,9 +13,9 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        UserDAO userDAO = new MemoryUserDAO();
-        AuthDAO authDAO = new MemoryAuthDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
+        UserDAO userDAO = new MySqlUserDAO();
+        AuthDAO authDAO = new MySqlAuthDAO();
+        GameDAO gameDAO = new MySqlGameDAO();
 
         UserService userService = new UserService(userDAO, authDAO);
         GameService gameService = new GameService(authDAO, gameDAO);
