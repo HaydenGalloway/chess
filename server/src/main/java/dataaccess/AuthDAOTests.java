@@ -45,4 +45,27 @@ public class AuthDAOTests {
         assertEquals(originalAuth, returnedAuth, "returned AuthData does not match original.");
     }
 
+    @Test
+    public void getAuthNegative() throws DataAccessException {
+        AuthData returnedAuth = authDAO.getAuth("FalseToken125");
+        assertNull(returnedAuth, "getAuth should return null for a token that does not exist.");
+    }
+
+    @Test
+    public void deleteAuthPositive() throws DataAccessException {
+        String tokenString = "*3idne2owlskdjff";
+        authDAO.createAuth(new AuthData(tokenString, "Freddy103"));
+        authDAO.deleteAuth(tokenString);
+        assertNull(authDAO.getAuth(tokenString), "authToken should not exist after being deleted.");
+    }
+
+    @Test
+    public void clearPositive() throws DataAccessException {
+        authDAO.createAuth(new AuthData("token#1", "Freddy1"));
+        authDAO.createAuth(new AuthData("token#2", "Freddy2"));
+        authDAO.clear();
+        assertNull(authDAO.getAuth("token#1"), "token#1 should not exist after clear.");
+        assertNull(authDAO.getAuth("token#2"), "token#2 should not exist after clear.");
+    }
+
 }
