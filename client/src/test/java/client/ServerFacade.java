@@ -5,16 +5,22 @@ import exception.ErrorResponse;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
+import model.GameData;
 
 
 import java.io.*;
 import java.net.*;
+import java.util.Collection;
 
 public class ServerFacade {
 
     private final String serverUrl;
 
     public record LoginRequest(String username, String password) {};
+    public record CreateGameRequest(String gameName) {};
+    public record CreateGameResponse(Integer gameID) {};
+    public record ListGamesResponse(Collection<GameData> games) {};
+    public record JoinGameRequest(Integer gameID, String playerColor) {};
 
     public ServerFacade(String url) {
         serverUrl = url;
@@ -35,6 +41,28 @@ public class ServerFacade {
     public AuthData logout(String authToken) throws ResponseException {
         var path = "/session";
         return makeRequest("DELETE", path, null, null, authToken);
+    }
+
+    public CreateGameResponse createGame(String authToken, String gameName) throws ResponseException {
+        var path = "/game";
+        var request = new CreateGameRequest(gameName);
+        return makeRequest("POST", path, request, CreateGameResponse.class, authToken);
+    }
+
+    public ListGamesResponse listGames(String authToken) throws ResponseException {
+        var path = "/game";
+        return makeRequest("GET", path, null, ListGamesResponse.class, authToken);
+    }
+
+    public void joinGame(String authToken, int gameID, String playerColor) throws ResponseException {
+        var path = "/game";
+        var request = new JoinGameRequest(gameID, playerColor);
+        makeRequest("PUT", path, request, null, authToken);
+    }
+
+    public void clear() throws ResponseException {
+        var path = "/db";
+        makeRequest("DELETE", path, null, null, null);
     }
 
 
