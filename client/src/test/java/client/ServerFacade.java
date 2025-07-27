@@ -3,6 +3,8 @@ package client;
 import com.google.gson.Gson;
 import exception.ErrorResponse;
 import exception.ResponseException;
+import model.AuthData;
+import model.UserData;
 
 
 import java.io.*;
@@ -14,6 +16,12 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+
+    public AuthData register(String username, String password, String email) throws  ResponseException {
+        var path = "/user";
+        var request = new UserData(username, password, email);
+        return this.makeRequest("POST", path, request, AuthData.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
