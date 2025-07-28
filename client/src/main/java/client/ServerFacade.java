@@ -1,7 +1,6 @@
 package client;
 
 import com.google.gson.Gson;
-import exception.ErrorResponse;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
