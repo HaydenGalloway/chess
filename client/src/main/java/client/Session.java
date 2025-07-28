@@ -21,4 +21,10 @@ public class Session {
     public void setAuthToken(String token) {
         this.authToken = token;
     }
+
+    public void clearAuth() {
+        this.authToken = null;
+    }
+
+
 }
