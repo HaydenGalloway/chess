@@ -43,6 +43,7 @@ public class PostLoginClient implements ChessClient {
             case "help" -> help();
             case "quit" -> "quit";
             case "logout" -> logout();
+            case "create" -> createGame(command);
             default -> "Unable to process command. Type 'help' for options.\n";
         };
     }
@@ -56,5 +57,18 @@ public class PostLoginClient implements ChessClient {
         }
         session.clearAuth();
         return "Logged out.\n";
+    }
+
+    private String createGame(String input) {
+        var gameName = input.length() > "create".length() ? input.substring("create".length()).trim() : "";
+        if (gameName.isEmpty()) {
+            return "Use the following format for 'create' command:\ncreate <game name>\n";
+        }
+        try {
+            session.getServerFacade().createGame(session.getAuthToken(), gameName);
+            return "Game Created: '%s'.\n".formatted(gameName);
+        } catch (ResponseException ex) {
+            return "Failed to create a game: %s\n".formatted(ex.getMessage());
+        }
     }
 }
