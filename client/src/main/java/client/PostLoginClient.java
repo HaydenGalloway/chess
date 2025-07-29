@@ -44,6 +44,7 @@ public class PostLoginClient implements ChessClient {
             case "quit" -> "quit";
             case "logout" -> logout();
             case "create" -> createGame(command);
+            case "list" -> listGames();
             default -> "Unable to process command. Type 'help' for options.\n";
         };
     }
@@ -71,4 +72,16 @@ public class PostLoginClient implements ChessClient {
             return "Failed to create a game: %s\n".formatted(ex.getMessage());
         }
     }
+
+    private String listGames() {
+        try {
+            var gameList = session.getServerFacade().listGames(session.getAuthToken());
+            return gameList.toString();
+        } catch (ResponseException ex) {
+            return "Failed to list games: %s\n".formatted(ex.getMessage());
+        }
+    }
+
+
+
 }
