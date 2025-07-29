@@ -22,8 +22,8 @@ public class PostLoginClient implements ChessClient {
                - logout
                - create <game name> - create a new game
                - list - list the games
-               - play <game-number> <white|black> - play a game
-               - observe <game-number> - observe a game
+               - play <game number> <white|black> - play a game
+               - observe <game number> - observe a game
                - quit
                
                """;
@@ -45,6 +45,7 @@ public class PostLoginClient implements ChessClient {
             case "logout" -> logout();
             case "create" -> createGame(command);
             case "list" -> listGames();
+            case "play" -> playGame(tokens);
             default -> "Unable to process command. Type 'help' for options.\n";
         };
     }
@@ -79,6 +80,30 @@ public class PostLoginClient implements ChessClient {
             return gameList.toString();
         } catch (ResponseException ex) {
             return "Failed to list games: %s\n".formatted(ex.getMessage());
+        }
+    }
+
+    private String playGame(String[] tokens) {
+        if (tokens.length != 3) {
+            return "Usage: play <game number> <white|black>\n";
+        }
+        int index;
+        try {
+            index = Integer.parseInt(tokens[1]);
+        } catch (NumberFormatException e) {
+            return "Game number must be an integer. Try 'list' then 'play <n> <white|black>'.\n";
+        }
+        var color = tokens[2];
+        if (!color.equals("white") && !color.equals("black")) {
+            return "Color must be 'white' or 'black'.\n";
+        }
+        int gameID = session.gameIdFromDisplayIndex(index);
+        try {
+            session.getServerFacade().joinGame(session.getAuthToken(), gameID, color.toUpperCase());
+            // board logic
+            return "Joined game as %s.\n".formatted(color);
+        } catch (ResponseException ex) {
+            return "Join failed: %s\n".formatted(ex.getMessage());
         }
     }
 
