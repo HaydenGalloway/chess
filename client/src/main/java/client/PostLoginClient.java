@@ -46,6 +46,7 @@ public class PostLoginClient implements ChessClient {
             case "create" -> createGame(command);
             case "list" -> listGames();
             case "play" -> playGame(tokens);
+            case "observe" -> observeGame(tokens);
             default -> "Unable to process command. Type 'help' for options.\n";
         };
     }
@@ -85,7 +86,7 @@ public class PostLoginClient implements ChessClient {
 
     private String playGame(String[] tokens) {
         if (tokens.length != 3) {
-            return "Usage: play <game number> <white|black>\n";
+            return "Use the following format for 'play' command:\nplay <game number> <white|black>\n";
         }
         int index;
         try {
@@ -104,6 +105,27 @@ public class PostLoginClient implements ChessClient {
             return "Joined game as %s.\n".formatted(color);
         } catch (ResponseException ex) {
             return "Join failed: %s\n".formatted(ex.getMessage());
+        }
+    }
+
+    private String observeGame(String[] tokens) {
+        if (tokens.length != 2) {
+            return "Use the following format for 'observe' command:\nobserve <game number>\n";
+        }
+        int index;
+        try {
+            index = Integer.parseInt(tokens[1]);
+        } catch (NumberFormatException e) {
+            return "Game number must be an integer. Try 'list' then 'observe <game number>'.\n";
+        }
+        int gameID;
+        gameID = session.gameIdFromDisplayIndex(index);
+        try {
+            session.getServerFacade().joinGame(session.getAuthToken(), gameID, null);
+            // board render logic
+            return "Observing game.";
+        } catch (ResponseException ex) {
+            return "Failed to observe game: %s\n".formatted(ex.getMessage());
         }
     }
 
